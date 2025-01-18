@@ -12,26 +12,35 @@ export const Message = () => {
     const [messages,setMessages] = useState<{userId:string;message:string;messageId:string}[]>([]);
     const [userId] = useState(() => v4()); 
 
-  const sendMessage = useCallback(()=> {
-    console.log("Message sent!");
-  if(!socketRef.current || socketRef.current.readyState!==WebSocket.OPEN){
-    console.log("WebSocket is not open");
-    return;
-  }
+    const sendMessage = useCallback(() => {
+      if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
+        console.log("WebSocket is not open");
+        return;
+      }
     
-    if(inputRef.current){
-    const message = inputRef.current.value.trim();
-    if(message){
-      const payload = JSON.stringify({
-        type:'chat',
-        payload:{userId,message,room:roomId},
-      });
-      console.log('payload:',payload)
-     socketRef.current.send(payload);
-     inputRef.current.value = ''
-    }
-  }
-},[roomId,userId])
+      if (inputRef.current) {
+        const message = inputRef.current.value.trim();
+        if (message) {
+          const newMessage = {
+            userId,
+            message,
+            messageId: v4(), // Generate a unique messageId
+          };
+    
+          // Add message locally before sending it to the server
+          setMessages((prev) => [...prev, newMessage]);
+    
+          const payload = JSON.stringify({
+            type: 'chat',
+            payload: { userId, message, room: roomId },
+          });
+          socketRef.current.send(payload);
+    
+          inputRef.current.value = '';
+        }
+      }
+    }, [roomId, userId]);
+    
 
 const init = useCallback(() => {
   if (!roomId) {

@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import {GlowEffect } from "./Glow";
 import { Message } from "./Message";
 import { useRouter } from "next/navigation";
-
+import React, { Suspense } from "react";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -21,7 +21,9 @@ export default function ChatPage() {
         </header>
 
       <main className="w-full max-w-3xl flex flex-col gap-4 flex-grow bg-transparent p-6 rounded-lg shadow-lg">
+      <Suspense fallback={<div>Loading chat...</div>}>
         <Message />
+        </Suspense>
       </main>
 
       <footer className="w-full max-w-3xl text-center py-4 text-gray-500 text-sm border-t border-gray-700 mt-6">

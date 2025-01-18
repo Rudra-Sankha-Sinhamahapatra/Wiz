@@ -43,8 +43,9 @@ const init = useCallback(() => {
     console.log("WebSocket already initialized.");
     return;
   }
-
-  const ws = new WebSocket("ws://localhost:8080");
+// console.log('ws url: ',process.env.NEXT_PUBLIC_WS_URL)
+// console.log('j url: ',process.env.NEXT_PUBLIC_WS)
+  const ws = new WebSocket(`wss://${process.env.NEXT_PUBLIC_WS_URL}`);
   socketRef.current = ws;
 
   ws.onopen = () => {
